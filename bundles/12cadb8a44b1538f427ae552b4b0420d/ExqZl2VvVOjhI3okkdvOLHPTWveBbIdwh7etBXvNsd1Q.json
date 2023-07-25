@@ -1,0 +1,1 @@
+{"capture_base":"EaoQGi3IIonm2i4hAHSa6rJoqskianRriWa01RNg_N-c","digest":"ExqZl2VvVOjhI3okkdvOLHPTWveBbIdwh7etBXvNsd1Q","type":"spec/overlays/format/1.0","attribute_formats":{"Color":"^[A-Za-z0-9_]{10}$","Date_of_purchase":"YYYY-MM-DD","Series":"^[+-]?\\d*\\.?\\d+$","Year_of_purchase":"^[+-]?\\d*\\.?\\d+$"}}
