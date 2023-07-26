@@ -1,134 +1,90 @@
+BEGIN_OCA_MANIFEST
+************************************************************
+Bundle SAID: XXXXXXXXXX
 
+"capture_base" SAID:  "ERlDuDCpVUqGA2nBsWs8N41MaxZEdJt5FGQcVELLv038"
+
+
+"character_encoding" SAID:  "ElUDy-ub9i2RXxFiyIRG65ORzEL1ax4hb5S0ZHHbMv38"
+"information (en)" SAID:  "ErXuoOoIh1QM_Udf25wDHgD8fj-eZAsZNNM0FRi8WgIk"
+"label (en)" SAID:  "EpQGJvWUKdlZGGhy5b-BsF-RlVnL-paWPs1-6eRMG_Mk"
+"meta (en)" SAID:  "EKRwsBTPFG9rT8ULAruDEVFZH1ueYQteZQzMKuc6jM1o"
+"unit" SAID:  "ER-NIAB7GhtK6Hjuza0fYHEvTvulUqavvO3A_MiAjDIA"
+************************************************************
+END_OCA_MANIFEST
+
+BEGIN_OCA_BUNDLE
+************************************************************
   Layer name: capture_base/1.0
-  SAID: EVnvZJj9NrgJcyjB9Hltx6r1w1fi20mVG23vv7eI2sC8
-  classification: CRDC:RDF40
+  SAID: ERlDuDCpVUqGA2nBsWs8N41MaxZEdJt5FGQcVELLv038
+  classification: RDF212
   Schema attributes: 
-    analysisDate: DateTime
-    collectionDate: DateTime
-    insectCount: Numeric
-    insectType: Numeric
-    insectWeight: Array[Numeric]
-    location: Text
+    Color: Text
+    Series: Text
+    Year_of_purchase: Text
   
-
-*********************************************************
+  flagged_Schema attributes: [
+    Color
+    Series
+    Year_of_purchase
+  ]
+************************************************************
 
   Layer name: character_encoding/1.0
-  SAID: ETCBOek8JY83XCtZTOUyXlcnTczEdytLp-xpC7eDGRGY
+  SAID: ElUDy-ub9i2RXxFiyIRG65ORzEL1ax4hb5S0ZHHbMv38
   default_character_encoding: utf-8
   Schema attribute_character_encoding: 
-    analysisDate: utf-8
-    collectionDate: utf-8
-    insectCount: utf-8
-    insectType: utf-8
-    insectWeight: utf-8
-    location: utf-8
+    Color: utf-8
+    Series: utf-8
+    Year_of_purchase: utf-8
   
-
-*********************************************************
-
-  Layer name: format/1.0
-  SAID: ESxH42FcC2WcnWrJHIeuXr55MoS9EWGl8PUiA-SwTwok
-  Schema attribute_formats: 
-    analysisDate: YYYY-MM-DD
-    collectionDate: YYYY-MM-DD
-    insectCount: -?\\d+?:\\.\\d*|-?[0-9]*
-    insectType: -?\\d+?:\\.\\d*|-?[0-9]*
-    insectWeight: -?\\d+?:\\.\\d*|-?[0-9]*
-    location: [^]*
-  
-
-*********************************************************
-
-  Layer name: label/1.0
-  SAID: EEx61pSoWiYrfcqavqh3xQl-WVGB9MAgOFRVCqXbUKjY
-  language: en
-  Schema attribute_labels: 
-    analysisDate: Date of Analysis
-    collectionDate: Date of Collection
-    insectCount: Insect Count
-    insectType: Insect Type
-    insectWeight: Insect Weights
-    location: Campus location
-  
-
-*********************************************************
-
-  Layer name: information/1.0
-  SAID: E0P9nrVxglX0G0nQxqUUT2M_-gUUAO-Il3zVBDfD-W4E
-  language: en
-  Schema attribute_information: 
-    analysisDate: Data of analysis of samples all in a single day
-    collectionDate: Date of sample collection
-    insectCount: number of specified honeybees
-    insectType: species of honeybee counted and weighed
-    insectWeight: weights of honebees that were weighed: note not every collected bee was weighed
-    location: Campus location where the samples were collected on the date of sample collection
-  
-
-*********************************************************
-
-  Layer name: entry_code/1.0
-  SAID: E3PGUpSlSQDrmDabXs4_neknGV-5eLYD-5VstMOBimRM
-  Schema attribute_entry_codes: 
-    insectType: [
-      501
-      527
-    ]
-    location: [
-      BAFF
-      TH
-    ]
-  
-
-*********************************************************
-
-  Layer name: entry/1.0
-  SAID: EJUu256bPq40VO1IpbAyKDlErOZFbix141GerLcOfgh4
-  language: en
-  Schema attribute_entries: 
-    insectType: 
-      501: Carniolan honey bee
-      527: Russian honey bee
-    
-    location: 
-      BAFF: Bedrock Aquifer Field Facility
-      TH: Townsend House
-    
-  
-
-*********************************************************
+************************************************************
 
   Layer name: unit/1.0
-  SAID: E_XuB6gNgVuOjy2pHQvD6wz1KZy8SPUsVTjxYiH0b250
+  SAID: ER-NIAB7GhtK6Hjuza0fYHEvTvulUqavvO3A_MiAjDIA
   Schema attribute_units: 
-    insectWeight: mg
+    Color: 
+    Series: 
+    Year_of_purchase: 
   
+************************************************************
 
-*********************************************************
-
-  Layer name: meta/1.0
-  SAID: EKBw_KVlzdxI6tvopUHwdUc2DhmMrGWaZ3h7q1pWi-nA
+  Layer name: label/1.0
+  SAID: EpQGJvWUKdlZGGhy5b-BsF-RlVnL-paWPs1-6eRMG_Mk
   language: en
-  name: Insect Counting
-  description: A schema for insect counts developed at the University of Guelph as an ADC test schema
+  Schema attribute_labels: 
+    Color: 
+    Series: 
+    Year_of_purchase: 
+  
+************************************************************
 
-*********************************************************
+  Layer name: information/1.0
+  SAID: ErXuoOoIh1QM_Udf25wDHgD8fj-eZAsZNNM0FRi8WgIk
+  language: en
+  Schema attribute_information: 
+    Color: 
+    Series: 
+    Year_of_purchase: 
+  
+************************************************************
 
   Layer name: meta/1.0
-  SAID: EKBw_KVlzdxI6tvopUHwdUc2DhmMrGWaZ3h7q1pWi-nA
+  SAID: EKRwsBTPFG9rT8ULAruDEVFZH1ueYQteZQzMKuc6jM1o
+  language: en
+  name: Iphones
+************************************************************
+
+  Layer name: meta/1.0
+  SAID: EKRwsBTPFG9rT8ULAruDEVFZH1ueYQteZQzMKuc6jM1o
   files: 
-    EVnvZJj9NrgJcyjB9Hltx6r1w1fi20mVG23vv7eI2sC8: 
-      character_encoding: ETCBOek8JY83XCtZTOUyXlcnTczEdytLp-xpC7eDGRGY
-      entry en: EJUu256bPq40VO1IpbAyKDlErOZFbix141GerLcOfgh4
-      entry_code: E3PGUpSlSQDrmDabXs4_neknGV-5eLYD-5VstMOBimRM
-      format: ESxH42FcC2WcnWrJHIeuXr55MoS9EWGl8PUiA-SwTwok
-      information en: E0P9nrVxglX0G0nQxqUUT2M_-gUUAO-Il3zVBDfD-W4E
-      label en: EEx61pSoWiYrfcqavqh3xQl-WVGB9MAgOFRVCqXbUKjY
-      meta en: EKBw_KVlzdxI6tvopUHwdUc2DhmMrGWaZ3h7q1pWi-nA
-      unit: E_XuB6gNgVuOjy2pHQvD6wz1KZy8SPUsVTjxYiH0b250
+    ERlDuDCpVUqGA2nBsWs8N41MaxZEdJt5FGQcVELLv038: 
+      character_encoding: ElUDy-ub9i2RXxFiyIRG65ORzEL1ax4hb5S0ZHHbMv38
+      information (en): ErXuoOoIh1QM_Udf25wDHgD8fj-eZAsZNNM0FRi8WgIk
+      label (en): EpQGJvWUKdlZGGhy5b-BsF-RlVnL-paWPs1-6eRMG_Mk
+      meta (en): EKRwsBTPFG9rT8ULAruDEVFZH1ueYQteZQzMKuc6jM1o
+      unit: ER-NIAB7GhtK6Hjuza0fYHEvTvulUqavvO3A_MiAjDIA
     
   
-  root: EVnvZJj9NrgJcyjB9Hltx6r1w1fi20mVG23vv7eI2sC8
-
-*********************************************************
+  root: ERlDuDCpVUqGA2nBsWs8N41MaxZEdJt5FGQcVELLv038
+************************************************************
