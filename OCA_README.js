@@ -10,7 +10,6 @@ const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/ff5b8d642dd2ec7d5307e8
 async function ArrayOcaOverays(path) {
   try {
     const data = await fs.readFile(path);
-
     const zip = new JSZip();
     const contents = await zip.loadAsync(data);
 
@@ -26,7 +25,6 @@ async function ArrayOcaOverays(path) {
         console.log('Not a JSON file:', filename);
       }
     }
-
     const jsonFilesArray = Object.values(jsonFiles);
     return jsonFilesArray;
   } catch (err) {
@@ -37,38 +35,45 @@ async function ArrayOcaOverays(path) {
 async function toTextFile(jsonFilesArray) {
   const textFile = [];
   const variablesArray = [];
+  const JSONoverlays = [];
   let Layer_name = null;
   let SAID = null;
   let Manifest = [];
+  let Meta_json = null;
  
 
   for (const jsonFile of jsonFilesArray) {
     const json = JSON.parse(jsonFile);
+    if (json.hasOwnProperty("files")) {
+      Meta_json = json;
+    } else {
+      JSONoverlays.push(json);
+    }
     const other_variables = {};
 
-    // preparing the manifest
-    for (const key in json) {
 
-      if (key === "files") {
-        const value = json[key];
-        const files = value; 
-        const files_values = Object.values(files);
-        const files_keys = Object.keys(files);
-        const files_keys_string = files_keys.toString();
+    // // preparing the manifest
+    // for (const key in json) {
 
-        // create a new key value pair for this files keys and make the key capture_base and the value the files_keys
-        const capture_base = "capture_base";
-        const capture_base_key_value_pair = {capture_base: files_keys_string };
+    //   if (key === "files") {
+    //     const values = json[key];
+    //     const files_values = Object.values(values);
+    //     const files_key = Object.keys(values);
+    //     const files_key_string = files_key.toString();
 
-        // push the capture_base_key_value_pair to the files_values as the first element
-        files_values.unshift(capture_base_key_value_pair);
-        Manifest.push(files_values); 
-        console.log(Manifest);
-      }
-    }
+    //     // create a new key value pair for this files keys and make the key capture_base and the value the files_keys
+    //     const capture_base_key_value_pair = {capture_base: files_key_string };
+
+    //     // push the capture_base_key_value_pair to the files_values as the first element
+    //     files_values.unshift(capture_base_key_value_pair);
+    //     Manifest.push(files_values); 
+    //   }
+    // }
+
 
     // preparing the body of the OCA readme
     for (const key in json) {
+
       if (key === "type") {
         const value = json[key];
         // get the the layer_name from the type as the last two elements
@@ -104,21 +109,40 @@ async function toTextFile(jsonFilesArray) {
   textFile.push("Bundle SAID: XXXXXXXXXX\n\n");
 
 
+  
+  // the OCA manifest
+  const Meta_values = Object.values(Meta_json);
+  const capture_key = Object.keys(Meta_values);
+  const caputer_key_string = capture_key.toString();
+
+  const capture_base_key_value_pair = {capture_base: caputer_key_string };
+  Meta_values.unshift(capture_base_key_value_pair);
+
+  Manifest.push(Meta_values); 
 
   const manifest_string = JSON.stringify(Manifest,null,0.5);
-  const trimmed_string = manifest_string.replace(/[\[\]']+/g, '');
-  const manifest_without_curly_brackets = trimmed_string.replace(/[{}]/g, '');
-  const manifest_with_SAID = manifest_without_curly_brackets.replace(/:/g, " SAID: ");
-  const manifest_with_SAID_trimmed = manifest_with_SAID.trim();
-  const manifest_without_commas = manifest_with_SAID_trimmed.replace(/,/g, '');
-  const manifest_without_square_brackets = manifest_without_commas.replace(/[\[\]']+/g, '');
 
-  textFile.push(manifest_without_square_brackets);
+
+
+  // console.log(manifest_string);
+
+  // const trimmed_string = manifest_string.replace(/[\[\]']+/g, '');
+  const manifest_without_square_brackets = manifest_string.replace(/[\[\]']+/g, '');
+  const manifest_without_curly_brackets = manifest_without_square_brackets.replace(/[{}]/g, '');
+  const manifest_without_linebreaks = manifest_without_curly_brackets.replace(/\n/g, '');
+  const manifest_with_linebreaks = manifest_without_linebreaks.replace(/,/g, ',\n');
+  const manifest_without_commas = manifest_with_linebreaks.replace(/,/g, '');
+  const manifest_with_SAID = manifest_without_commas.replace(/:/g, " SAID: ");
+
+
+  textFile.push(manifest_with_SAID);
   textFile.push("\n")
   textFile.push("************************************************************\n");
   textFile.push("END_OCA_MANIFEST\n\n");
   textFile.push("BEGIN_OCA_BUNDLE\n");
   textFile.push("************************************************************")
+
+
 
 
   // change the variablesArray to textFile
