@@ -122,7 +122,7 @@ the associated entry codes: entry labels
 
 	location:
 		BAFF: Bedrock Aquifer Field Facility
-        TH: Townsend House
+		TH: Townsend House
 
 ******************************************
 END_OCA_BUNDLE

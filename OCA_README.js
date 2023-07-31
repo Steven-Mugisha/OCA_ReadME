@@ -7,6 +7,25 @@ const { text } = require('stream/consumers');
 const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip';
 // const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/c84f6625f6c144bf25419bde579b5ef7.zip';
 
+const readmeText = `
+This is a human-readable format of an OCA schema
+OCA_READ_ME/1.0
+README SAID: xxxxxxxxxxxxxxxxxxxxxxxx
+
+Reference for Overlays Capture Architecture (OCA): 
+https://doi.org/10.5281/zenodo.7707467
+Reference for OCA_READ_ME/1.0:
+<when available>
+
+In OCA, a schema consists of a capture_base which documents the attributes and their most basic features.
+A schema may also contain overlays which add details to the capture_base.
+For each overlay and capture_base, a hash of their original contents has been calculated and is reported here as the SAID value.
+
+This READ ME format documents the capture_base and overlays that were associated together in a single OCA Bundle.
+OCA_MANIFEST lists all components of the OCA Bundle.
+For the OCA_BUNDLE, each section between rows of ****'s contains the details of one "layer type/version" of the OCA Bundle.\n\n`;
+
+
 async function ArrayOcaOverays(path) {
   try {
     const data = await fs.readFile(path);
@@ -33,140 +52,110 @@ async function ArrayOcaOverays(path) {
 }
 
 async function toTextFile(jsonFilesArray) {
+
+  // declare the variables
   const textFile = [];
   const variablesArray = [];
-  const JSONoverlays = [];
+  let Manifest = [];
   let Layer_name = null;
   let SAID = null;
-  let Manifest = [];
-  let Meta_json = null;
- 
 
   for (const jsonFile of jsonFilesArray) {
+    const other_variables = {}; // Object to store variables other than "Layer_name" and "SAID" for each overlay
+    let hasFilesProperty = false; // Flag to check if "files" property is present
     const json = JSON.parse(jsonFile);
+  
     if (json.hasOwnProperty("files")) {
-      Meta_json = json;
-    } else {
-      JSONoverlays.push(json);
+      const files = json.files;
+      const capture_base_key_value_pair = { capture_base: Object.keys(files) };
+      const files_values = [capture_base_key_value_pair, ...Object.values(files)];
+      Manifest.push(files_values);
+      hasFilesProperty = true;
     }
-    const other_variables = {};
-
-
-    // // preparing the manifest
-    // for (const key in json) {
-
-    //   if (key === "files") {
-    //     const values = json[key];
-    //     const files_values = Object.values(values);
-    //     const files_key = Object.keys(values);
-    //     const files_key_string = files_key.toString();
-
-    //     // create a new key value pair for this files keys and make the key capture_base and the value the files_keys
-    //     const capture_base_key_value_pair = {capture_base: files_key_string };
-
-    //     // push the capture_base_key_value_pair to the files_values as the first element
-    //     files_values.unshift(capture_base_key_value_pair);
-    //     Manifest.push(files_values); 
-    //   }
-    // }
-
-
-    // preparing the body of the OCA readme
+  
+    if (hasFilesProperty) {
+      continue;
+    }
+  
     for (const key in json) {
-
+      const value = json[key];
+  
       if (key === "type") {
-        const value = json[key];
-        // get the the layer_name from the type as the last two elements
         const split_type = value.split("/");
-        const last_two_elements = split_type.slice(-2);
-        Layer_name = last_two_elements.join("/");
+        Layer_name = split_type.slice(-2).join("/");
       } else if (key === "digest") {
-          SAID = json[key];
-        } else if (key !== "capture_base") {
-          let value = json[key];
-          if (value !== null && value !== undefined && value !== []) {
-            // check if the value is empty
-            if (Object.keys(value).length !== 0 || Array.isArray(value) && value.length !== 0) {
-              // push other key-value pairs to other_variables
-              other_variables[key] = value;
-            }
-          }
+        SAID = value;
+      } else if (key !== "capture_base" && value != null) {
+        if (Object.keys(value).length !== 0 || (Array.isArray(value) && value.length !== 0)) {
+          other_variables[key] = value;
         }
       }
-
+    }
+  
     const variables = {
       Layer_name: Layer_name,
       SAID: SAID,
       ...other_variables,
-  
     };
     variablesArray.push(variables);
   }
-
-  // here we push the values to the text file 
-  textFile.push("BEGIN_OCA_MANIFEST\n");
-  textFile.push("************************************************************\n");
-  textFile.push("Bundle SAID: XXXXXXXXXX\n\n");
-
-
   
+  // turning OCA bundle into OCA readme starts here
+  // here we push the values to the text file 
+  textFile.push(
+    readmeText,
+    "BEGIN_OCA_MANIFEST\n",
+    "************************************************************\n",
+    "Bundle SAID: XXXXXXXXXX\n\n"
+  );
+
   // the OCA manifest
-  const Meta_values = Object.values(Meta_json);
-  const capture_key = Object.keys(Meta_values);
-  const caputer_key_string = capture_key.toString();
-
-  const capture_base_key_value_pair = {capture_base: caputer_key_string };
-  Meta_values.unshift(capture_base_key_value_pair);
-
-  Manifest.push(Meta_values); 
-
-  const manifest_string = JSON.stringify(Manifest,null,0.5);
-
-
-
-  // console.log(manifest_string);
-
-  // const trimmed_string = manifest_string.replace(/[\[\]']+/g, '');
-  const manifest_without_square_brackets = manifest_string.replace(/[\[\]']+/g, '');
-  const manifest_without_curly_brackets = manifest_without_square_brackets.replace(/[{}]/g, '');
-  const manifest_without_linebreaks = manifest_without_curly_brackets.replace(/\n/g, '');
-  const manifest_with_linebreaks = manifest_without_linebreaks.replace(/,/g, ',\n');
-  const manifest_without_commas = manifest_with_linebreaks.replace(/,/g, '');
-  const manifest_with_SAID = manifest_without_commas.replace(/:/g, " SAID: ");
+  const manifest_string = JSON.stringify(Manifest,null,0);
+  const cleaned_manifest = manifest_string.replace(/[\[\]{}]/g, '').replace(/\n/g, '').replace(/,/g, ',\n').replace(/:/g, ' SAID: ');
+  textFile.push(
+    cleaned_manifest,
+    "\n",
+    "************************************************************\n",
+    "END_OCA_MANIFEST\n\n",
+    "BEGIN_OCA_BUNDLE\n",
+    "************************************************************"
+  );
 
 
-  textFile.push(manifest_with_SAID);
-  textFile.push("\n")
-  textFile.push("************************************************************\n");
-  textFile.push("END_OCA_MANIFEST\n\n");
-  textFile.push("BEGIN_OCA_BUNDLE\n");
-  textFile.push("************************************************************")
+  variablesArray.forEach((variable) => {
+    const schema_overlay_name = variable.Layer_name
+    const text = JSON.stringify(variable, null, 3);
 
-
-
-
-  // change the variablesArray to textFile
-  for (const variable of variablesArray) {
-    const text = JSON.stringify(variable, null, 2);
-
-    // split the Layer_name using the slash and the first element is the layer name
-    const split_layer_name = variable.Layer_name.split("/");
-    const overlay_name = split_layer_name[0];
-
-    // Remove curly brackets, double quotes, commas and colons
+    // Remove curly brackets, double quotes, and colons
     const text_without_curly_brackets = text.replace(/[{}]/g, '');
     const text_without_double_quotes = text_without_curly_brackets.replace(/"/g, '');
-    const text_without_commas = text_without_double_quotes.replace(/,/g, '');
-    const text_with_schema_attributes = text_without_commas.replace(/attribute/g, "Schema attribute");
+
+    // Remove commas only for strings not enclosed in square brackets
+    const result = text_without_double_quotes.replace(/(\[[^\]]*\]|[^[\],]+),?/g, (match, group) => {
+      if (match.includes('[') && match.includes(']')) {
+        // If enclosed in square brackets, keep it on the same line and remove inner whitespaces
+        return group.replace(/\n/g, '').replace(/\s+/g, '');
+      } else {
+        return group.replace(/,/g, ''); // Otherwise, remove the commas
+      }
+    });
+  
+    const text_with_schema_attributes = result.replace(/\b.*attribute.*\b/g, `Schema attribute: ${schema_overlay_name}`);
+
     const text_with_schema_layer_name = text_with_schema_attributes.replace(/Layer_name:/g, "Layer name:");
-
-
+  
     if (!textFile.includes(text_with_schema_layer_name)) {
       textFile.push(text_with_schema_layer_name);
-      textFile.push("************************************************************\n");
-    
+      textFile.push("************************************************************");
     }
-  }
+  });
+  
+
+  
+
+  
+  
+  
 
   const text = textFile.join('');
 
@@ -175,7 +164,6 @@ async function toTextFile(jsonFilesArray) {
 
 
 }
-
 
 
 async function main() {
