@@ -3,7 +3,7 @@ const JSZip = require('jszip');
 const { text } = require('stream/consumers');
 
 
-
+// const path  = '/Users/mugisha/Desktop/clone/ReadME/bundles/9f103493cbe64733919f00d3768e6ba5.zip';
 const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip';
 // const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/c84f6625f6c144bf25419bde579b5ef7.zip';
 
@@ -100,8 +100,7 @@ async function toTextFile(jsonFilesArray) {
     variablesArray.push(variables);
   }
   
-  // turning OCA bundle into OCA readme starts here
-  // here we push the values to the text file 
+  // turning OCA bundle into OCA readme begins here
   textFile.push(
     readmeText,
     "BEGIN_OCA_MANIFEST\n",
@@ -109,7 +108,7 @@ async function toTextFile(jsonFilesArray) {
     "Bundle SAID: XXXXXXXXXX\n\n"
   );
 
-  // the OCA manifest
+  // the OCA manifest (all the overlay hashes (SAIDs))
   const manifest_string = JSON.stringify(Manifest,null,0);
   const cleaned_manifest = manifest_string.replace(/[\[\]{}]/g, '').replace(/\n/g, '').replace(/,/g, ',\n').replace(/:/g, ' SAID: ');
   textFile.push(
@@ -121,17 +120,53 @@ async function toTextFile(jsonFilesArray) {
     "************************************************************"
   );
 
-
+  // for each overlay individually, counting all possible case that need Regex handling
   variablesArray.forEach((variable) => {
-    const schema_overlay_name = variable.Layer_name
-    const text = JSON.stringify(variable, null, 3);
 
-    // Remove curly brackets, double quotes, and colons
-    const text_without_curly_brackets = text.replace(/[{}]/g, '');
-    const text_without_double_quotes = text_without_curly_brackets.replace(/"/g, '');
+    // renaming the overlay variables to match the OCA_READ_ME format
+    const schemaAttributeKeysToRemove = ['flagged_attributes', 'attribute', 'attributes', 'attr'];
+
+    for (const key in variable) {
+      if (!schemaAttributeKeysToRemove.includes(key)) {
+        const newKey = key.includes('attribute') || key.includes('attributes') || key === 'attr'
+          ? 'Schema attribute'
+          : key;
+        variable[newKey] = variable[key];
+        if (newKey !== key) {
+          delete variable[key];
+        }
+      }
+    }
+
+    const schemaAttribute = variable["Schema attribute"];
+    if (schemaAttribute && typeof schemaAttribute === 'object') {
+      Object.keys(schemaAttribute).forEach(key => {
+        if (!schemaAttribute[key]) {
+          delete schemaAttribute[key];
+        }
+      });
+
+      if (Object.keys(schemaAttribute).length === 0) {
+        delete variable["Schema attribute"];
+      }
+    }
+
+    // Handle the special case when the key is "attributes" {for capture_base}
+    const attributesValue = variable["attributes"];
+    if (attributesValue === undefined || attributesValue === null || attributesValue === '') {
+      delete variable["attributes"];
+    } else {
+      variable["Schema attribute"] = variable["attributes"];
+      delete variable["attributes"];
+    }
+    
+    // handling indentation 
+    const text = JSON.stringify(variable, null, 3);
+    const cleaned_text = text.replace(/^ {3}/mg, '').replace(/[{}"]/g, '');
+
 
     // Remove commas only for strings not enclosed in square brackets
-    const result = text_without_double_quotes.replace(/(\[[^\]]*\]|[^[\],]+),?/g, (match, group) => {
+    const result = cleaned_text.replace(/(\[[^\]]*\]|[^[\],]+),?/g, (match, group) => {
       if (match.includes('[') && match.includes(']')) {
         // If enclosed in square brackets, keep it on the same line and remove inner whitespaces
         return group.replace(/\n/g, '').replace(/\s+/g, '');
@@ -139,24 +174,22 @@ async function toTextFile(jsonFilesArray) {
         return group.replace(/,/g, ''); // Otherwise, remove the commas
       }
     });
-  
-    const text_with_schema_attributes = result.replace(/\b.*attribute.*\b/g, `Schema attribute: ${schema_overlay_name}`);
+    
+    // adding overaly name to the textFile 
+    const text_with_schema_attributes = result.replace(/Schema attribute:/g, '\nSchema attribute: ' + variable.Layer_name);
+    // const text_with_schema_attributes = result.replace(/Schema attribute:/g, ' Schema attribute: ' + variable.Layer_name);
 
-    const text_with_schema_layer_name = text_with_schema_attributes.replace(/Layer_name:/g, "Layer name:");
+    const text_with_schema_layer_name = text_with_schema_attributes.replace(/Layer_name:/g, 'Layer name:');
+
+
   
     if (!textFile.includes(text_with_schema_layer_name)) {
-      textFile.push(text_with_schema_layer_name);
+      textFile.push(
+        text_with_schema_layer_name);
       textFile.push("************************************************************");
     }
   });
   
-
-  
-
-  
-  
-  
-
   const text = textFile.join('');
 
   const filename = 'Text_ReadMe.txt';
@@ -164,7 +197,6 @@ async function toTextFile(jsonFilesArray) {
 
 
 }
-
 
 async function main() {
   const jsonFilesArray = await ArrayOcaOverays(path);
