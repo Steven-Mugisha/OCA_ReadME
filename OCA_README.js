@@ -3,8 +3,8 @@ const JSZip = require('jszip');
 const { text } = require('stream/consumers');
 
 
-// const path  = '/Users/mugisha/Desktop/clone/ReadME/bundles/9f103493cbe64733919f00d3768e6ba5.zip';
-const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip';
+const path  = '/Users/mugisha/Desktop/clone/ReadME/bundles/9f103493cbe64733919f00d3768e6ba5.zip';
+// const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip';
 // const path = '/Users/mugisha/Desktop/clone/ReadME/bundles/c84f6625f6c144bf25419bde579b5ef7.zip';
 
 const readmeText = `
@@ -120,7 +120,7 @@ async function toTextFile(jsonFilesArray) {
     "************************************************************"
   );
 
-  // for each overlay individually, counting all possible case that need Regex handling
+  // for each overlay individually, counting all possible cases that need Regex handling
   variablesArray.forEach((variable) => {
 
     // renaming the overlay variables to match the OCA_READ_ME format
