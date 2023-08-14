@@ -5,8 +5,8 @@ require('dotenv').config();
 
 // path to the OCA bundle using the .env file
 const directory = process.env.path;
-const path = `${directory}/9f103493cbe64733919f00d3768e6ba5.zip`
-// const path = `${directory}/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip`
+// const path = `${directory}/9f103493cbe64733919f00d3768e6ba5.zip`
+const path = `${directory}/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip`
 // const path = `${directory}/c84f6625f6c144bf25419bde579b5ef7.zip`
 
 
@@ -193,6 +193,7 @@ async function toTextFile(jsonFilesArray) {
     }
   });
   
+  textFile.push("\nEND_OCA_BUNDLE")
   const text = textFile.join('');
 
   const filename = 'Text_ReadMe.txt';

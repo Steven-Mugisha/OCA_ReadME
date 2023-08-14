@@ -134,3 +134,4 @@ language: en
 name: Insect Counting
 description: A schema for insect counts developed at the University of Guelph as an ADC test schema
 ************************************************************
+END_OCA_BUNDLE
