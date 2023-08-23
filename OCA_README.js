@@ -3,12 +3,11 @@ const JSZip = require('jszip');
 const { text } = require('stream/consumers');
 require('dotenv').config();
 
-// path to the OCA bundle using the .env file
-const directory = process.env.path;
-const path = `${directory}/9f103493cbe64733919f00d3768e6ba5.zip`
-// const path = `${directory}/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip`
-// const path = `${directory}/c84f6625f6c144bf25419bde579b5ef7.zip`
 
+// path to the OCA bundle for examples
+// const directory = process.env.path;
+// const path = `${directory}/9f103493cbe64733919f00d3768e6ba5.zip`
+// const path = `${directory}/ff5b8d642dd2ec7d5307e8ecd9156ab9.zip`
 
 const readmeText = `
 This is a human-readable format of an OCA schema
@@ -27,7 +26,6 @@ For each overlay and capture_base, a hash of their original contents has been ca
 This READ ME format documents the capture_base and overlays that were associated together in a single OCA Bundle.
 OCA_MANIFEST lists all components of the OCA Bundle.
 For the OCA_BUNDLE, each section between rows of ****'s contains the details of one "layer type/version" of the OCA Bundle.\n\n`;
-
 
 async function ArrayOcaOverays(path) {
   try {
