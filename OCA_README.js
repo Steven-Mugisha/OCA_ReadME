@@ -1,6 +1,5 @@
 const fs = require('fs').promises;
 const JSZip = require('jszip');
-const { text } = require('stream/consumers');
 require('dotenv').config();
 
 
@@ -12,7 +11,6 @@ require('dotenv').config();
 const readmeText = `
 This is a human-readable format of an OCA schema
 OCA_READ_ME/1.0
-README SAID: xxxxxxxxxxxxxxxxxxxxxxxx
 
 Reference for Overlays Capture Architecture (OCA): 
 https://doi.org/10.5281/zenodo.7707467
@@ -124,7 +122,7 @@ async function toTextFile(jsonFilesArray) {
   // for each overlay individually, counting all possible cases that need Regex handling
   variablesArray.forEach((variable) => {
 
-    // renaming the overlay variables to match the OCA_READ_ME format
+    // renaming the overlay variables to match the OCA_README format
     const schemaAttributeKeysToRemove = ['flagged_attributes', 'attribute', 'attributes', 'attr'];
 
     for (const key in variable) {
@@ -165,7 +163,6 @@ async function toTextFile(jsonFilesArray) {
     const text = JSON.stringify(variable, null, 3);
     const cleaned_text = text.replace(/^ {3}/mg, '').replace(/[{}"]/g, '');
 
-
     // Remove commas only for strings not enclosed in square brackets
     const result = cleaned_text.replace(/(\[[^\]]*\]|[^[\],]+),?/g, (match, group) => {
       if (match.includes('[') && match.includes(']')) {
@@ -181,8 +178,6 @@ async function toTextFile(jsonFilesArray) {
     // const text_with_schema_attributes = result.replace(/Schema attribute:/g, ' Schema attribute: ' + variable.Layer_name);
 
     const text_with_schema_layer_name = text_with_schema_attributes.replace(/Layer_name:/g, 'Layer name:');
-
-
   
     if (!textFile.includes(text_with_schema_layer_name)) {
       textFile.push(
@@ -196,8 +191,6 @@ async function toTextFile(jsonFilesArray) {
 
   const filename = 'Text_ReadMe.txt';
   await fs.writeFile(filename, text);
-
-
 }
 
 async function main() {
